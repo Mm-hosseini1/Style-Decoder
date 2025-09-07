@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<!-- Defaulting to English, JS will handle language switching -->
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style Decoder by MMH</title>
+    
+    <script>
+      window.tailwind = { config: { darkMode: 'class' } };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Vazirmatn for Persian, Inter for English -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&display=swap" rel="stylesheet">
+
+    <link id="hljs-dark-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <link id="hljs-light-theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" disabled>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+
+
+    <style>
+        /* ============================================
+        UI Redesign V29 - Layout & UX Fixes
+        ============================================
+        Changes:
+        1.  **Fixed Header Layout:** Header now maintains a consistent LTR layout (logo left, icons right) regardless of page language to prevent disorientation.
+        2.  **Added API Key Instructions:** Added a clear, helpful note in the settings modal explaining where and how to get a Gemini API key, with a direct link.
+        3.  **Refined i18n:** Improved the translation script to handle HTML content, like links.
+        */
+
+        :root {
+            --bg-start-light: #e4eff2;
+            --bg-end-light: #f4eef2;
+            --text-primary-light: #1e293b;
+            --text-secondary-light: #475569;
+            --glass-bg-light: rgba(255, 255, 255, 0.6);
+            --glass-border-light: rgba(203, 213, 225, 0.7);
+            --primary-accent-light: #4f46e5;
+            --primary-accent-hover-light: #4338ca;
+            --surface-light: rgba(255, 255, 255, 0.3);
+            --model-selector-active-bg-light: #ffffff;
+            --model-selector-active-text-light: var(--primary-accent-light);
+            --code-bg-light: #fafafa; /* Atom One Light BG */
+            --code-header-bg-light: #f1f5f9;
+            --code-border-light: #e2e8f0;
+
+            --bg-start-dark: #181438;
+            --bg-end-dark: #141838;
+            --text-primary-dark: #e2e8f0;
+            --text-secondary-dark: #94a3b8;
+            --glass-bg-dark: rgba(30, 41, 59, 0.5);
+            --glass-border-dark: rgba(255, 255, 255, 0.15);
+            --primary-accent-dark: #818cf8;
+            --primary-accent-hover-dark: #a78bfa;
+            --surface-dark: rgba(255, 255, 255, 0.07);
+            --model-selector-active-bg-dark: rgba(255, 255, 255, 0.1);
+            --model-selector-active-text-dark: #ffffff;
+            --code-bg-dark: #282c34; /* Atom One Dark BG */
+            --code-header-bg-dark: #1e2228;
+            --code-border-dark: #3a4049;
+        }
+
+        html {
+            --bg-start: var(--bg-start-light);
+            --bg-end: var(--bg-end-light);
+            --text-primary: var(--text-primary-light);
+            --text-secondary: var(--text-secondary-light);
+            --glass-bg: var(--glass-bg-light);
+            --glass-border: var(--glass-border-light);
+            --primary-accent: var(--primary-accent-light);
+            --primary-accent-hover: var(--primary-accent-hover-light);
+            --surface: var(--surface-light);
+            --btn-text-on-accent: #ffffff;
+            --model-selector-active-bg: var(--model-selector-active-bg-light);
+            --model-selector-active-text: var(--model-selector-active-text-light);
+            --code-bg: var(--code-bg-light);
+            --code-header-bg: var(--code-header-bg-light);
+            --code-border: var(--code-border-light);
+        }
+
+        html.dark {
+            --bg-start: var(--bg-start-dark);
+            --bg-end: var(--bg-end-dark);
+            --text-primary: var(--text-primary-dark);
+            --text-secondary: var(--text-secondary-dark);
+            --glass-bg: var(--glass-bg-dark);
+            --glass-border: var(--glass-border-dark);
+            --primary-accent: var(--primary-accent-dark);
+            --primary-accent-hover: var(--primary-accent-hover-dark);
+            --surface: var(--surface-dark);
+            --btn-text-on-accent: #1e293b;
+            --model-selector-active-bg: var(--model-selector-active-bg-dark);
+            --model-selector-active-text: var(--model-selector-active-text-dark);
+            --code-bg: var(--code-bg-dark);
+            --code-header-bg: var(--code-header-bg-dark);
+            --code-border: var(--code-border-dark);
+        }
+
+        body {
+            /* Font family will be set by JS */
+            background-color: var(--bg-start);
+            color: var(--text-primary);
+            transition: background-color 0.5s ease;
+            overflow: hidden;
+        }
+        
+        #aurora-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            background: linear-gradient(125deg, var(--bg-start), var(--bg-end));
+        }
+        
+        @media (prefers-reduced-motion: no-preference) {
+             #aurora-background {
+                animation: gradient-animation 20s ease infinite alternate;
+             }
+        }
+
+        @keyframes gradient-animation {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background-color: rgba(128, 128, 128, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background-color: rgba(128, 128, 128, 0.5); }
+
+        .main-container { height: 100vh; display: flex; flex-direction: column; }
+        header { flex-shrink: 0; border-bottom: 1px solid var(--glass-border); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        main { flex-grow: 1; overflow-y: auto; padding-top: 2rem; padding-bottom: 4rem; }
+        
+        .glass-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease, border 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-accent);
+            color: var(--btn-text-on-accent);
+            font-weight: 500;
+            border-radius: 0.75rem;
+            padding: 0.875rem 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px -5px var(--primary-accent);
+        }
+        
+        @media (prefers-reduced-motion: no-preference) {
+            .btn-primary:hover:not(:disabled) {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px -5px var(--primary-accent);
+            }
+        }
+         .btn-primary:hover:not(:disabled) { background-color: var(--primary-accent-hover); }
+        .btn-primary:disabled { background-color: var(--primary-accent); opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+
+        .header-icon {
+            color: var(--text-primary);
+            background-color: transparent;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        @media (prefers-reduced-motion: no-preference) { .header-icon:hover { transform: scale(1.1); } }
+        .header-icon:hover { background-color: var(--surface); }
+
+        .dropzone { border: 2px dashed var(--glass-border); transition: all 0.3s ease; background-color: var(--surface); }
+        .dropzone:hover { border-color: var(--primary-accent); }
+        .dropzone.active { border-color: var(--primary-accent); background-color: rgba(79, 70, 229, 0.1); }
+        @media (prefers-reduced-motion: no-preference) { .dropzone.active { transform: scale(1.02); } }
+        html.dark .dropzone.active { background-color: rgba(129, 140, 248, 0.1); }
+
+        .monospace { font-family: 'Fira Code', monospace; direction: ltr; text-align: left; }
+        
+        .api-key-input { color: var(--text-primary) !important; background-color: var(--surface) !important; border: 1px solid var(--glass-border) !important; backdrop-filter: blur(5px); }
+
+        .iris-loader { width: 120px; height: 120px; }
+        @media (prefers-reduced-motion: no-preference) { .iris-loader .blade { animation: rotate-blade 4s ease-in-out infinite; } }
+        .iris-loader .blade { fill: var(--primary-accent); transform-origin: center; }
+        .iris-loader .blade-1 { animation-delay: 0s; } .iris-loader .blade-2 { animation-delay: -3.8s; } .iris-loader .blade-3 { animation-delay: -3.6s; } .iris-loader .blade-4 { animation-delay: -3.4s; } .iris-loader .blade-5 { animation-delay: -3.2s; } .iris-loader .blade-6 { animation-delay: -3.0s; }
+        
+        @keyframes rotate-blade { 0%, 100% { transform: rotate(0deg) scale(1); opacity: 1; } 50% { transform: rotate(90deg) scale(0.8); opacity: 0.5; } }
+        
+        #processingText { transition: opacity 0.5s ease-in-out; }
+        
+        @media (prefers-reduced-motion: no-preference) {
+            .fade-in { animation: fadeIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+            .modal-content { animation: slideInUp 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; }
+            .toast-enter { animation: fadeIn 0.4s ease-out forwards; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in-delay-1 { animation-delay: 150ms; } .fade-in-delay-2 { animation-delay: 300ms; } .fade-in-delay-3 { animation-delay: 450ms; }
+
+        @keyframes slideInUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+        .summary-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0)), var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: var(--text-primary);
+        }
+
+        .code-block {
+            background-color: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .code-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background-color: var(--code-header-bg);
+            border-bottom: 1px solid var(--code-border);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        .code-block-title { font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); }
+        
+        .code-block-copy-btn { color: var(--text-secondary); padding: 0.25rem; border-radius: 0.375rem; transition: all 0.2s ease; }
+        .code-block-copy-btn:hover { background-color: var(--surface); color: var(--text-primary); }
+
+        .code-block pre { margin: 0; padding: 1rem; max-height: 400px; overflow-y: auto; }
+        .code-block pre code.hljs { background-color: transparent !important; }
+
+    </style>
+</head>
+<body>
+
+    <div id="aurora-background"></div>
+
+    <div class="main-container">
+        <header>
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- FIX: Added dir="ltr" to this container to maintain a consistent visual layout (logo left, icons right) regardless of the page's language direction. -->
+                <div class="flex justify-between items-center py-5" dir="ltr">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 flex items-center justify-center" aria-hidden="true">
+                            <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color: var(--primary-accent-dark);"/>
+                                        <stop offset="100%" style="stop-color: #c084fc;"/>
+                                    </linearGradient>
+                                </defs>
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z" fill="url(#logoGradient)" fill-opacity="0.4"/>
+                                <path d="M12 4c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm0 13c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z" fill="url(#logoGradient)"/>
+                                <path d="M12 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="url(#logoGradient)"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-xl sm:text-2xl font-bold" style="color: var(--text-primary);">Style Decoder</h1>
+                            <p data-lang-key="app_subtitle" class="text-xs sm:text-sm font-light" style="color: var(--text-secondary);">Extract the visual soul of images</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button id="langToggleBtn" class="header-icon font-semibold" data-lang-key-title="toggle_language_title" title="Switch Language"></button>
+                        <button id="themeToggleBtn" data-lang-key-title="toggle_theme_title" title="Toggle Theme" class="header-icon" aria-label="Toggle Theme">
+                            <svg id="themeIconSun" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                            <svg id="themeIconMoon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                        </button>
+                        <button id="settingsBtn" class="header-icon" data-lang-key-aria-label="settings_title" aria-label="Settings">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="lg:grid lg:grid-cols-2 lg:gap-8 lg:items-start">
+                    <div>
+                        <div class="lg:sticky top-8 h-fit">
+                            <div class="glass-card rounded-3xl p-6 flex flex-col space-y-6 mb-8 lg:mb-0">
+                                <div id="dropzone" class="dropzone rounded-2xl flex flex-col justify-center items-center text-center p-6 cursor-pointer min-h-[150px]" role="button" tabindex="0" data-lang-key-aria-label="dropzone_label" aria-label="Drag & drop images here, or click to select">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mb-3" style="color: var(--text-secondary);" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                                    <p data-lang-key="dropzone_label" style="color: var(--text-secondary);">Drag & drop images here, or click to select</p>
+                                    <p data-lang-key="dropzone_hint" class="text-xs mt-2 leading-relaxed" style="color: var(--text-secondary); opacity: 0.7;">Up to 10 images (JPEG, PNG, WebP)</p>
+                                    <input type="file" id="fileInput" class="hidden" multiple accept="image/jpeg, image/png, image/webp">
+                                </div>
+
+                                <div id="gallery" class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3"></div>
+
+                                <div id="modelSelector" class="flex flex-col space-y-2">
+                                    <label data-lang-key="processing_power" class="text-sm font-medium" style="color: var(--text-secondary);">Processing Power</label>
+                                    <div class="flex items-center gap-1 rounded-xl p-1" style="background-color: var(--surface); border: 1px solid var(--glass-border);">
+                                        <label class="model-selector-label flex-1 text-center py-2 rounded-lg cursor-pointer text-sm transition-all has-[:checked]:shadow-sm">
+                                            <input type="radio" name="aiModel" value="flash" class="sr-only" checked />
+                                            <span data-lang-key="model_flash">Low (Fast)</span>
+                                        </label>
+                                        <label class="model-selector-label flex-1 text-center py-2 rounded-lg cursor-pointer text-sm transition-all has-[:checked]:shadow-sm">
+                                            <input type="radio" name="aiModel" value="pro" class="sr-only" />
+                                            <span data-lang-key="model_pro">High (Accurate)</span>
+                                        </label>
+                                    </div>
+                                    <style>
+                                        .model-selector-label { color: var(--text-secondary); }
+                                        .model-selector-label:has(:checked) {
+                                            background-color: var(--model-selector-active-bg);
+                                            color: var(--model-selector-active-text);
+                                            font-weight: 500;
+                                        }
+                                    </style>
+                                </div>
+
+                                <button id="startAnalysisBtn" data-lang-key="start_analysis_btn" class="w-full btn-primary flex justify-center items-center" disabled>
+                                    Start Analysis
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="w-full">
+                        <div id="resultsPanel">
+                            <div id="initialState" class="h-full flex flex-col justify-center items-center text-center p-6 rounded-3xl min-h-[400px]" style="border: 2px dashed var(--glass-border); background: var(--surface);">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mb-4" style="color: var(--text-secondary); opacity: 0.5;" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                                <h2 data-lang-key="initial_state_title" class="text-xl font-bold" style="color: var(--text-primary);">Your results will appear here</h2>
+                                <p data-lang-key="initial_state_body" class="mt-2" style="color: var(--text-secondary);">Upload one or more images to get started.</p>
+                            </div>
+                            <div id="processingState" class="h-full flex flex-col justify-center items-center text-center hidden glass-card rounded-3xl min-h-[400px]">
+                                <svg class="iris-loader" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <path class="blade blade-1" d="M 50 50 L 30 10 C 30 10, 50 20, 70 10 L 50 50 Z" />
+                                    <path class="blade blade-2" d="M 50 50 L 10 30 C 10 30, 20 50, 10 70 L 50 50 Z" />
+                                    <path class="blade blade-3" d="M 50 50 L 30 90 C 30 90, 50 80, 70 90 L 50 50 Z" />
+                                    <path class="blade blade-4" d="M 50 50 L 90 70 C 90 70, 80 50, 90 30 L 50 50 Z" />
+                                </svg>
+                                <h2 id="processingText" class="text-xl font-bold mt-8" style="color: var(--text-primary);" aria-live="polite"></h2>
+                            </div>
+                            <div id="resultsState" class="hidden"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <div id="settingsModal" class="fixed inset-0 bg-black/70 flex justify-center items-end sm:items-center hidden z-50">
+        <div class="glass-card modal-content rounded-t-3xl sm:rounded-3xl p-6 w-full max-w-lg m-0 sm:m-4 flex flex-col items-center space-y-6">
+            <div class="modal-header-container">
+                <h2 data-lang-key="settings_modal_title" class="text-xl font-bold" style="color: var(--text-primary);">API Key Settings</h2>
+            </div>
+            <style>
+                .modal-header-container { background: var(--surface); border: 1px solid var(--glass-border); padding: 0.75rem 1.5rem; border-radius: 9999px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+            </style>
+            
+            <p class="text-xs text-center max-w-md" style="color: var(--text-secondary); opacity: 0.9;" data-lang-key-html="api_key_instruction_full"></p>
+
+            <div id="apiKeyList" class="w-full space-y-3 max-h-60 overflow-y-auto pr-2"></div>
+            <div class="w-full flex flex-col sm:flex-row justify-between items-center gap-4">
+                <button id="addApiKeyBtn" data-lang-key="add_key_btn" class="w-full sm:w-auto py-2 px-4 rounded-lg transition font-medium" style="background: var(--surface); color: var(--text-primary);">Add Key</button>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button id="closeSettingsBtn" data-lang-key="close_btn" class="flex-1 py-2 px-4 rounded-lg transition font-medium" style="background: var(--surface); color: var(--text-primary);">Close</button>
+                    <button id="saveApiKeysBtn" data-lang-key="save_btn" class="flex-1 btn-primary py-2 px-4">Save</button>
+                </div>
+            </div>
+            <p data-lang-key="settings_hint" class="text-xs text-center" style="color: var(--text-secondary); opacity: 0.8;">On error, the tool will automatically try the next key.</p>
+        </div>
+    </div>
+
+<script>
+class StyleDecoder {
+    constructor() {
+        this.config = {
+            MAX_IMAGES: 10,
+            MAX_FILE_SIZE_MB: 5,
+            API_BASE_URL: 'https://generativelanguage.googleapis.com/v1beta/models',
+            MODELS: {
+                flash: 'gemini-2.5-flash',
+                pro: 'gemini-2.5-pro',
+            },
+        };
+
+        this.state = {
+            apiKeys: [],
+            uploadedFiles: [],
+            isProcessing: false,
+            lastResult: null,
+            currentTheme: 'dark',
+            currentLanguage: 'en', // 'en' or 'fa'
+            apiEndpoint: `${this.config.API_BASE_URL}/${this.config.MODELS.flash}:generateContent`,
+        };
+
+        this.ui = {};
+        this.textAnimationInterval = null;
+
+        this.translations = {
+            en: {
+                app_subtitle: "Extract the visual soul of images",
+                toggle_language_title: "Switch Language",
+                toggle_theme_title: "Toggle Theme",
+                settings_title: "Settings",
+                dropzone_label: "Drag & drop images here, or click to select",
+                dropzone_hint: "Up to 10 images (JPEG, PNG, WebP)",
+                processing_power: "Processing Power",
+                model_flash: "Low (Fast)",
+                model_pro: "High (Accurate)",
+                start_analysis_btn: "Start Analysis",
+                initial_state_title: "Your results will appear here",
+                initial_state_body: "Upload one or more images to get started.",
+                settings_modal_title: "API Key Settings",
+                api_key_instruction_full: 'This tool requires a Google Gemini API key. Get your free key from <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" class="font-medium underline" style="color: var(--primary-accent);">Google AI Studio</a> and paste it below.',
+                add_key_btn: "Add Key",
+                close_btn: "Close",
+                save_btn: "Save",
+                settings_hint: "On error, the tool will automatically try the next key.",
+                api_key_placeholder: "Enter your API key...",
+                remove_key_aria_label: "Remove Key",
+                keys_saved_toast: (count) => `${count} API key(s) saved.`,
+                unsupported_format_toast: (name) => `File format of ${name} is not supported.`,
+                file_too_large_toast: (name, size) => `File size of ${name} exceeds ${size} MB.`,
+                max_images_toast: (max) => `You can upload a maximum of ${max} images.`,
+                remove_image_aria_label: "Remove Image",
+                processing_anim_1: "Analyzing color harmony...",
+                processing_anim_2: "Inspecting composition structure...",
+                processing_anim_3: "Identifying artistic influences...",
+                processing_anim_4: "Synthesizing final style code...",
+                no_api_key_toast: "Please enter at least one API key in the settings.",
+                invalid_response_error: "Invalid response received from server.",
+                unknown_analysis_error: "Unknown analysis error.",
+                all_keys_failed_error: "All API keys failed.",
+                server_error: (status) => `Server error: ${status}`,
+                api_response_error_title: "API Response Error",
+                style_description_title: "Style Description",
+                analyze_new_set_btn: "Analyze New Set",
+                copy_success_toast: "Text copied successfully!",
+                copy_fail_toast: "Copying failed.",
+            },
+            fa: {
+                app_subtitle: "روح بصری تصاویر را استخراج کنید",
+                toggle_language_title: "تغییر زبان",
+                toggle_theme_title: "تغییر تم",
+                settings_title: "تنظیمات",
+                dropzone_label: "تصاویر را اینجا بکشید یا برای انتخاب کلیک کنید",
+                dropzone_hint: "حداکثر ۱۰ تصویر (JPEG, PNG, WebP)",
+                processing_power: "حجم پردازش",
+                model_flash: "کم (سریع)",
+                model_pro: "زیاد (دقیق)",
+                start_analysis_btn: "شروع تحلیل",
+                initial_state_title: "نتایج شما اینجا نمایش داده می‌شود",
+                initial_state_body: "برای شروع، یک یا چند تصویر را بارگذاری کنید.",
+                settings_modal_title: "تنظیمات کلیدهای API",
+                api_key_instruction_full: 'این ابزار به کلید API گوگل جمنای نیاز دارد. کلید رایگان خود را از <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" class="font-medium underline" style="color: var(--primary-accent);">Google AI Studio</a> دریافت کرده و در کادر زیر وارد کنید.',
+                add_key_btn: "افزودن کلید",
+                close_btn: "بستن",
+                save_btn: "ذخیره",
+                settings_hint: "در صورت خطا، ابزار به صورت خودکار از کلید بعدی استفاده می‌کند.",
+                api_key_placeholder: "کلید API خود را وارد کنید…",
+                remove_key_aria_label: "حذف کلید",
+                keys_saved_toast: (count) => `تعداد ${count} کلید API ذخیره شد.`,
+                unsupported_format_toast: (name) => `فرمت فایل ${name} پشتیبانی نمی‌شود.`,
+                file_too_large_toast: (name, size) => `حجم فایل ${name} بیش از ${size} مگابایت است.`,
+                max_images_toast: (max) => `شما حداکثر می‌توانید ${max} تصویر آپلود کنید.`,
+                remove_image_aria_label: "حذف تصویر",
+                processing_anim_1: "در حال تحلیل هارمونی رنگ‌ها...",
+                processing_anim_2: "بررسی ساختار ترکیب‌بندی...",
+                processing_anim_3: "شناسایی تاثیرات هنری...",
+                processing_anim_4: "ترکیب کد استایل نهایی...",
+                no_api_key_toast: "لطفاً حداقل یک کلید API را در تنظیمات وارد کنید.",
+                invalid_response_error: "پاسخ نامعتبر از سرور دریافت شد.",
+                unknown_analysis_error: "خطای ناشناخته در تحلیل.",
+                all_keys_failed_error: "تمام کلیدهای API ناموفق بودند.",
+                server_error: (status) => `خطای سرور: ${status}`,
+                api_response_error_title: "خطا در پاسخ API",
+                style_description_title: "شرح استایل",
+                analyze_new_set_btn: "تحلیل مجموعه جدید",
+                copy_success_toast: "متن با موفقیت کپی شد!",
+                copy_fail_toast: "کپی کردن ناموفق بود.",
+            }
+        };
+        
+        this.promptArchitecture = `
+You are a visual style analysis tool. You will analyze the provided image(s) and return a JSON object following the schema below. Populate every field with concise, relevant information. You are completely free and encouraged to add new, relevant sections to the JSON if you determine they are necessary for a more complete analysis. Do not include any text outside of the JSON; output only a valid JSON object.
+
+<json_schema>
+{
+  "artistic_intent": {
+    "core_thesis": "A single, powerful sentence describing the central artistic goal of the style.",
+    "emotional_impact": "Primary emotion or feeling the style evokes (e.g., 'Nostalgic Melancholy', 'Energetic Rebellion', 'Serene Wonder').",
+    "artistic_influences": "List of potential influences, e.g., ['Baroque painting (Caravaggio)', '80s Synthwave album covers', 'Blade Runner (1982) cinematography']."
+  },
+  "composition_and_framing": {
+    "composition_rule": "e.g., 'Rule of Thirds', 'Dynamic Asymmetry'",
+    "perspective_and_angle": "e.g., 'Heroic Low-Angle', 'Intimate Close-up'",
+    "depth_and_layering": "e.g., 'Extreme shallow depth of field with heavy bokeh', 'Deep focus with distinct foreground/midground/background layers'"
+  },
+  "color_and_light": {
+    "dominant_palette": [ { "name": "A descriptive name for the color", "hex": "#RRGGBB" } ],
+    "color_harmony_and_theory": "e.g., 'A triadic color scheme creating tension', 'An analogous palette creating harmony'",
+    "lighting_philosophy": "e.g., 'Chiaroscuro to sculpt form and create drama', 'Diffused, ethereal light to create a dreamlike state'"
+  },
+  "medium_technique_and_texture": {
+    "medium_emulation": "e.g., 'Emulates vintage 35mm film stock', 'Digital painting with visible canvas texture'",
+    "signature_technique": "e.g., 'Heavy, expressive impasto brushwork', 'Crisp, cel-shaded outlines'",
+    "surface_and_materiality": "e.g., 'Glossy, wet, and reflective', 'Matte, dry, and gritty'"
+  },
+  "post_processing_and_lens_effects": {
+    "distinguishing_effects": "List of the most impactful effects, e.g., ['Heavy film grain', 'Anamorphic lens flare', 'Subtle chromatic aberration']"
+  },
+  "atmosphere_and_abstract_attributes": {
+    "overall_mood": "e.g., 'Cinematic and brooding', 'Nostalgic and hazy'",
+    "conceptual_tags": "List of high-level abstract keywords, e.g., ['surreal', 'minimalist', 'gothic', 'ethereal']"
+  },
+  "director_notes": "A brief, poetic paragraph explaining how to 'think' in this style. Describe the philosophy one must adopt to create within this visual universe.",
+  "recommendations": {
+    "for_generating_similar_images": [
+      "e.g., 'Focus on strong, clear character expressions, particularly through exaggerated eyes and mouths.'",
+      "'Utilize a limited color palette with black, white, and grey as foundational elements, adding small, vibrant pops of color.'",
+      "'Employ a hand-drawn, painterly aesthetic with visible brushstrokes and slightly wobbly, expressive outlines.'",
+      "'Keep backgrounds simple and uncluttered, often plain white, to maintain focus on the character.'",
+      "'Experiment with stylized or exaggerated character proportions for unique personalities.'",
+      "'Suggest traditional media like 'gouache and ink on paper' or 'watercolor illustration' in prompts.'"
+    ],
+    "techniques": "e.g., 'Use strong, colored light sources from different angles to create vibrant highlights and deep shadows. Shoot with a wide aperture for a shallow depth of field. In post-production, amplify saturation in the pink/blue/purple channels, and overlay film grain and dust textures to add an analog feel.'"
+  },
+  "style_description": "A short natural language description summarizing the look and feel of the style (e.g., 'moody cyberpunk neon lighting with deep blues and pinks, cinematic framing').",
+  "style_code": "Comma-separated keywords capturing the essence of the style; do not invent numeric sref codes."
+}
+</json_schema>
+<task>
+Analyze the provided image data. If multiple images are provided, focus on the common stylistic elements. Populate the JSON schema with detailed observations and recommendations.
+<image_data>
+[IMAGE_DATA_BLOCKS_HERE]
+</image_data>
+</task>
+`;
+    }
+
+    init() {
+        this.cacheDOMElements();
+        this.bindEventListeners();
+        this.updateApiModel();
+        this.initTheme();
+        this.initLanguage();
+        this.loadApiKeysFromStorage();
+        console.log("Style Decoder [V29 Fixed] Initialized.");
+    }
+
+    cacheDOMElements() {
+        const ids = [
+            'settingsBtn', 'settingsModal', 'closeSettingsBtn', 'addApiKeyBtn', 'saveApiKeysBtn', 'apiKeyList',
+            'dropzone', 'fileInput', 'gallery', 'startAnalysisBtn',
+            'resultsPanel', 'initialState', 'processingState', 'resultsState', 'processingText',
+            'themeToggleBtn', 'themeIconSun', 'themeIconMoon', 'langToggleBtn'
+        ];
+        ids.forEach(id => this.ui[id] = document.getElementById(id));
+        this.ui.modelInputs = document.querySelectorAll('input[name="aiModel"]');
+    }
+
+    bindEventListeners() {
+        this.ui.themeToggleBtn.addEventListener('click', () => this.toggleTheme());
+        this.ui.langToggleBtn.addEventListener('click', () => this.toggleLanguage());
+        this.ui.settingsBtn.addEventListener('click', () => this.toggleSettingsModal(true));
+        this.ui.closeSettingsBtn.addEventListener('click', () => this.toggleSettingsModal(false));
+        this.ui.settingsModal.addEventListener('click', (e) => {
+            if (e.target === this.ui.settingsModal) this.toggleSettingsModal(false);
+        });
+        this.ui.addApiKeyBtn.addEventListener('click', () => this.addApiKeyInput());
+        this.ui.saveApiKeysBtn.addEventListener('click', () => this.saveApiKeysToStorage());
+        this.ui.apiKeyList.addEventListener('click', (e) => {
+            const removeBtn = e.target.closest('.remove-api-key-btn');
+            if (removeBtn) {
+                removeBtn.closest('.api-key-group').remove();
+            }
+        });
+        this.ui.dropzone.addEventListener('click', () => this.ui.fileInput.click());
+        this.ui.dropzone.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.ui.fileInput.click();
+            }
+        });
+        this.ui.fileInput.addEventListener('change', (e) => this.handleFileSelect(e.target.files));
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            this.ui.dropzone.addEventListener(eventName, this.preventDefaults);
+        });
+        ['dragenter', 'dragover'].forEach(eventName => {
+            this.ui.dropzone.addEventListener(eventName, () => this.ui.dropzone.classList.add('active'));
+        });
+        ['dragleave', 'drop'].forEach(eventName => {
+            this.ui.dropzone.addEventListener(eventName, () => this.ui.dropzone.classList.remove('active'));
+        });
+        this.ui.dropzone.addEventListener('drop', (e) => this.handleFileSelect(e.dataTransfer.files));
+        this.ui.startAnalysisBtn.addEventListener('click', () => this.startAnalysis());
+
+        if (this.ui.modelInputs) {
+            this.ui.modelInputs.forEach(input => {
+                input.addEventListener('change', () => this.updateApiModel());
+            });
+        }
+    }
+    
+    // --- Language Methods ---
+    initLanguage() {
+        const savedLang = localStorage.getItem('language') || 'en';
+        this.setLanguage(savedLang);
+    }
+
+    setLanguage(lang) {
+        if (!['en', 'fa'].includes(lang)) return;
+        this.state.currentLanguage = lang;
+        const isRTL = lang === 'fa';
+
+        document.documentElement.lang = lang;
+        document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+        document.body.style.fontFamily = isRTL ? "'Vazirmatn', sans-serif" : "'Inter', sans-serif";
+        this.ui.langToggleBtn.textContent = isRTL ? 'EN' : 'FA';
+        
+        const elements = document.querySelectorAll('[data-lang-key], [data-lang-key-html]');
+        elements.forEach(el => {
+            const key = el.dataset.langKey || el.dataset.langKeyHtml;
+            const translation = this.translations[lang][key];
+            if (translation) {
+                if (el.dataset.langKey) {
+                    el.textContent = typeof translation === 'function' ? translation() : translation;
+                } else {
+                    el.innerHTML = typeof translation === 'function' ? translation() : translation;
+                }
+            }
+        });
+
+        const attrElements = document.querySelectorAll('[data-lang-key-title], [data-lang-key-aria-label], [data-lang-key-placeholder]');
+        attrElements.forEach(el => {
+            if (el.dataset.langKeyTitle) {
+                const key = el.dataset.langKeyTitle;
+                el.title = this.translations[lang][key];
+            }
+            if (el.dataset.langKeyAriaLabel) {
+                 const key = el.dataset.langKeyAriaLabel;
+                 el.setAttribute('aria-label', this.translations[lang][key]);
+            }
+            if (el.dataset.langKeyPlaceholder) {
+                 const key = el.dataset.langKeyPlaceholder;
+                 el.placeholder = this.translations[lang][key];
+            }
+        });
+
+        localStorage.setItem('language', lang);
+        
+        if (this.ui.settingsModal.classList.contains('hidden') === false) {
+             this.renderApiKeyList();
+        }
+    }
+
+    toggleLanguage() {
+        this.setLanguage(this.state.currentLanguage === 'fa' ? 'en' : 'fa');
+    }
+    
+    getString(key, ...args) {
+        const lang = this.state.currentLanguage;
+        const template = this.translations[lang][key];
+        if (typeof template === 'function') {
+            return template(...args);
+        }
+        return template || key;
+    }
+
+    initTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            this.setTheme('dark');
+        } else {
+            this.setTheme('light');
+        }
+    }
+
+    setTheme(theme) {
+        this.state.currentTheme = theme;
+        const root = document.documentElement;
+        if (theme === 'dark') {
+            root.classList.add('dark');
+            this.ui.themeIconSun.classList.add('hidden');
+            this.ui.themeIconMoon.classList.remove('hidden');
+        } else {
+            root.classList.remove('dark');
+            this.ui.themeIconSun.classList.remove('hidden');
+            this.ui.themeIconMoon.classList.add('hidden');
+        }
+        localStorage.setItem('theme', theme);
+
+        document.getElementById('hljs-dark-theme').disabled = (theme === 'light');
+        document.getElementById('hljs-light-theme').disabled = (theme === 'dark');
+    }
+
+    toggleTheme() {
+        this.setTheme(this.state.currentTheme === 'dark' ? 'light' : 'dark');
+    }
+
+    toggleSettingsModal(show) {
+        this.ui.settingsModal.classList.toggle('hidden', !show);
+        if (show) this.renderApiKeyList();
+    }
+
+    addApiKeyInput(key = '') {
+        const group = document.createElement('div');
+        group.className = 'flex items-center space-x-2 api-key-group';
+
+        const input = document.createElement('input');
+        input.type = 'password';
+        input.className = 'api-key-input flex-grow rounded-lg px-3 py-2 focus:outline-none focus:ring-2';
+        input.style.setProperty('--tw-ring-color', 'var(--primary-accent)');
+        input.placeholder = this.getString('api_key_placeholder');
+        input.autocomplete = 'off';
+        input.value = key;
+    
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-api-key-btn text-red-500/70 hover:text-red-500 p-2 rounded-full transition';
+        removeBtn.setAttribute('aria-label', this.getString('remove_key_aria_label'));
+        removeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clip-rule="evenodd" /></svg>`;
+    
+        group.append(input, removeBtn);
+        this.ui.apiKeyList.appendChild(group);
+    }
+
+    renderApiKeyList() {
+        this.ui.apiKeyList.innerHTML = '';
+        if (this.state.apiKeys.length > 0) {
+            this.state.apiKeys.forEach(key => this.addApiKeyInput(key));
+        } else {
+            this.addApiKeyInput();
+        }
+    }
+
+    loadApiKeysFromStorage() {
+        try {
+            const keys = JSON.parse(localStorage.getItem('styleDecoderApiKeys_v12') || '[]');
+            this.state.apiKeys = Array.isArray(keys) ? keys : [];
+        } catch {
+            this.state.apiKeys = [];
+        }
+    }
+
+    saveApiKeysToStorage() {
+        const inputs = this.ui.apiKeyList.querySelectorAll('.api-key-input');
+        const keys = Array.from(inputs).map(input => input.value.trim()).filter(Boolean);
+        this.state.apiKeys = keys;
+        localStorage.setItem('styleDecoderApiKeys_v12', JSON.stringify(keys));
+        this.toggleSettingsModal(false);
+        this.showToast(this.getString('keys_saved_toast', keys.length));
+    }
+
+    preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    handleFileSelect(files) {
+        if (this.state.isProcessing) return;
+        const newFiles = Array.from(files).filter(file => {
+            if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+                this.showToast(this.getString('unsupported_format_toast', file.name), 'error');
+                return false;
+            }
+            if (file.size > this.config.MAX_FILE_SIZE_MB * 1024 * 1024) {
+                this.showToast(this.getString('file_too_large_toast', file.name, this.config.MAX_FILE_SIZE_MB), 'error');
+                return false;
+            }
+            return true;
+        });
+
+        if (this.state.uploadedFiles.length + newFiles.length > this.config.MAX_IMAGES) {
+            this.showToast(this.getString('max_images_toast', this.config.MAX_IMAGES), 'error');
+            return;
+        }
+
+        newFiles.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const fileData = { file, id: `file-${Date.now()}-${Math.random()}`, dataUrl: e.target.result };
+                this.state.uploadedFiles.push(fileData);
+                this.addThumbnail(fileData);
+                this.updateStartButtonState(); 
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    addThumbnail(fileData) {
+        const div = document.createElement('div');
+        div.className = 'relative group fade-in';
+        div.id = fileData.id;
+
+        const img = document.createElement('img');
+        img.src = fileData.dataUrl;
+        img.className = 'w-full h-full object-cover rounded-lg aspect-square';
+        img.alt = 'thumbnail';
+
+        const overlay = document.createElement('div');
+        overlay.className = 'absolute inset-0 bg-black/60 flex justify-center items-center opacity-0 group-hover:opacity-100 transition rounded-lg';
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-thumbnail-btn text-white p-2 bg-red-600/80 rounded-full';
+        removeBtn.setAttribute('aria-label', this.getString('remove_image_aria_label'));
+        removeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>`;
+        removeBtn.addEventListener('click', () => this.removeFile(fileData.id));
+
+        overlay.appendChild(removeBtn);
+        div.append(img, overlay);
+        this.ui.gallery.appendChild(div);
+    }
+
+    removeFile(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.style.opacity = 0;
+            setTimeout(() => {
+                el.remove();
+                this.state.uploadedFiles = this.state.uploadedFiles.filter(f => f.id !== id);
+                this.updateStartButtonState();
+            }, 300);
+        }
+    }
+
+    updateStartButtonState() {
+        this.ui.startAnalysisBtn.disabled = this.state.uploadedFiles.length === 0 || this.state.isProcessing;
+    }
+
+    updateApiModel() {
+        const selected = document.querySelector('input[name="aiModel"]:checked').value;
+        const modelKey = selected === 'pro' ? 'pro' : 'flash';
+        const model = this.config.MODELS[modelKey];
+        this.state.apiEndpoint = `${this.config.API_BASE_URL}/${model}:generateContent`;
+    }
+
+    startProcessingAnimation() {
+        const textElement = this.ui.processingText;
+        const messages = [
+            this.getString('processing_anim_1'),
+            this.getString('processing_anim_2'),
+            this.getString('processing_anim_3'),
+            this.getString('processing_anim_4'),
+        ];
+        let messageIndex = 0;
+
+        const animate = () => {
+            textElement.style.opacity = 0;
+            setTimeout(() => {
+                textElement.textContent = messages[messageIndex];
+                textElement.style.opacity = 1;
+                messageIndex = (messageIndex + 1) % messages.length;
+            }, 500);
+        };
+        
+        animate();
+        this.textAnimationInterval = setInterval(animate, 2500);
+    }
+
+    stopProcessingAnimation() {
+        if (this.textAnimationInterval) {
+            clearInterval(this.textAnimationInterval);
+            this.textAnimationInterval = null;
+        }
+    }
+
+    async startAnalysis() {
+        if (this.state.uploadedFiles.length === 0 || this.state.isProcessing) return;
+        if (this.state.apiKeys.length === 0) {
+            this.showToast(this.getString('no_api_key_toast'), 'error');
+            this.toggleSettingsModal(true);
+            return;
+        }
+
+        this.updateApiModel();
+        this.state.isProcessing = true;
+        this.updateStartButtonState();
+        this.updateUIForState('processing');
+
+        try {
+            const base64Promises = this.state.uploadedFiles.map(fileData => this.fileToBase64(fileData.file));
+            const base64Images = await Promise.all(base64Promises);
+            const imageDataPayload = base64Images.map(b64 => ({ inlineData: { mimeType: b64.mimeType, data: b64.data } }));
+            const result = await this.sendToApi(imageDataPayload);
+            
+            if (result) {
+                this.state.lastResult = result;
+                this.renderResults(result);
+                this.updateUIForState('results');
+            } else {
+                throw new Error(this.getString('invalid_response_error'));
+            }
+
+        } catch (error) {
+            console.error("Analysis failed:", error);
+            this.showToast(error.message || this.getString('unknown_analysis_error'), 'error');
+            const errorPayload = { error: true, raw_response: error.message || this.getString('unknown_analysis_error') };
+            this.state.lastResult = errorPayload;
+            this.renderResults(errorPayload);
+            this.updateUIForState('results');
+        } finally {
+            this.state.isProcessing = false;
+            this.updateStartButtonState();
+        }
+    }
+
+    async sendToApi(imageData) {
+        let lastError = null;
+        for (let i = 0; i < this.state.apiKeys.length; i++) {
+            const key = this.state.apiKeys[i];
+            try {
+                const promptPart = { text: this.promptArchitecture.replace('[IMAGE_DATA_BLOCKS_HERE]', '') };
+                const parts = [promptPart, ...imageData];
+                const requestBody = { contents: [ { parts } ] };
+                
+                const response = await fetch(`${this.state.apiEndpoint}?key=${key}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error?.message || this.getString('server_error', response.status));
+                }
+                const data = await response.json();
+                const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!textResponse) throw new Error(this.getString('invalid_response_error'));
+                
+                try {
+                    const cleanedText = textResponse.replace(/```json|```/g, '').trim();
+                    return JSON.parse(cleanedText); 
+                } catch (jsonError) {
+                    console.error("Failed to parse JSON from API:", jsonError);
+                    return { error: "Failed to parse JSON from API", raw_response: textResponse };
+                }
+            } catch (error) {
+                console.warn(`Key ${i + 1} failed:`, error);
+                lastError = error;
+                if (String(error.message).includes('API key')) continue;
+                break;
+            }
+        }
+        throw lastError || new Error(this.getString('all_keys_failed_error'));
+    }
+    
+    fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64String = reader.result.split(',')[1];
+                resolve({ data: base64String, mimeType: file.type });
+            };
+            reader.onerror = error => reject(error);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    updateUIForState(state) {
+        this.ui.initialState.classList.toggle('hidden', state !== 'initial');
+        this.ui.processingState.classList.toggle('hidden', state !== 'processing');
+        this.ui.resultsState.classList.toggle('hidden', state !== 'results');
+
+        if (state === 'processing') {
+            this.startProcessingAnimation();
+        } else {
+            this.stopProcessingAnimation();
+        }
+        
+        if (state === 'initial') {
+            this.ui.gallery.innerHTML = '';
+            this.state.uploadedFiles = [];
+            this.state.lastResult = null;
+            this.updateStartButtonState();
+        }
+    }
+    
+    renderResults(data) {
+        this.ui.resultsState.innerHTML = '';
+        const container = document.createElement('div');
+        container.className = 'space-y-6';
+        
+        if (data.error) {
+             container.appendChild(this.createCodeBlockElement(this.getString('api_response_error_title'), data.raw_response, 'text', 'fade-in'));
+        } else {
+            container.appendChild(this.createSummaryCardElement(data.style_description, 'fade-in'));
+            container.appendChild(this.createCodeBlockElement('Style Code', data.style_code, 'text', 'fade-in fade-in-delay-1'));
+            container.appendChild(this.createCodeBlockElement('JSON Code', JSON.stringify(data, null, 2), 'json', 'fade-in fade-in-delay-2'));
+        }
+
+        const resetButton = document.createElement('button');
+        resetButton.className = 'w-full mt-10 mb-4 btn-primary fade-in';
+        resetButton.textContent = this.getString('analyze_new_set_btn');
+        resetButton.addEventListener('click', () => this.updateUIForState('initial'));
+        container.appendChild(resetButton);
+
+        this.ui.resultsState.appendChild(container);
+    }
+    
+    createSummaryCardElement(text, animationClass = '') {
+        const card = document.createElement('div');
+        card.className = `summary-card p-6 rounded-2xl flex items-start gap-4 ${animationClass}`;
+        
+        const iconContainer = document.createElement('div');
+        iconContainer.className = 'flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center';
+        iconContainer.style.background = 'var(--surface)';
+        iconContainer.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: var(--primary-accent);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>`;
+
+        const textContainer = document.createElement('div');
+        
+        const titleEl = document.createElement('h3');
+        titleEl.className = 'text-lg font-bold mb-1';
+        titleEl.style.color = 'var(--text-primary)';
+        titleEl.textContent = this.getString('style_description_title');
+        
+        const contentEl = document.createElement('p');
+        contentEl.className = 'text-sm leading-relaxed';
+        contentEl.style.color = 'var(--text-secondary)';
+        contentEl.textContent = text || 'No style description provided.';
+
+        // Content from API is LTR, so keep this style
+        contentEl.style.direction = 'ltr';
+        contentEl.style.textAlign = 'justify';
+        
+        textContainer.append(titleEl, contentEl);
+        card.append(iconContainer, textContainer);
+        return card;
+    }
+
+    createCodeBlockElement(title, text, language, animationClass = '') {
+        const wrapper = document.createElement('div');
+        wrapper.className = `code-block ${animationClass}`;
+
+        const header = document.createElement('div');
+        header.className = 'code-block-header';
+
+        const titleEl = document.createElement('span');
+        titleEl.className = 'code-block-title';
+        titleEl.textContent = title;
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'code-block-copy-btn';
+        copyBtn.setAttribute('aria-label', `Copy ${title}`);
+        copyBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>`;
+        
+        const pre = document.createElement('pre');
+        const code = document.createElement('code');
+        code.className = `language-${language} monospace`;
+        code.textContent = text;
+        
+        hljs.highlightElement(code);
+        
+        copyBtn.addEventListener('click', () => {
+            this.copyToClipboard(text, copyBtn);
+        });
+
+        header.append(titleEl, copyBtn);
+        pre.appendChild(code);
+        wrapper.append(header, pre);
+        return wrapper;
+    }
+    
+    copyToClipboard(text, buttonElement) {
+        if (!text) return;
+
+        const showSuccess = () => {
+            this.showToast(this.getString('copy_success_toast'));
+            if (buttonElement) {
+                const originalIcon = buttonElement.innerHTML;
+                buttonElement.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 pointer-events-none" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>`;
+                setTimeout(() => { buttonElement.innerHTML = originalIcon; }, 2000);
+            }
+        };
+
+        const showError = () => {
+             this.showToast(this.getString('copy_fail_toast'), 'error');
+        };
+
+        const legacyCopy = () => {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.top = '-9999px';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) showSuccess(); else showError();
+            } catch (err) {
+                showError();
+            }
+            document.body.removeChild(textArea);
+        };
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(showSuccess, legacyCopy);
+        } else {
+            legacyCopy();
+        }
+    }
+
+    showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.setAttribute('role', 'alert');
+        const bgColor = type === 'success' ? '#22c55e' : '#ef4444';
+        toast.className = `fixed bottom-5 p-4 rounded-xl shadow-lg text-white z-50 toast-enter`;
+        // Adjust toast position based on language direction
+        if (this.state.currentLanguage === 'fa') {
+            toast.classList.add('right-5');
+        } else {
+            toast.classList.add('left-5');
+        }
+        toast.style.backgroundColor = bgColor;
+        toast.style.backdropFilter = 'blur(10px)';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => { toast.remove(); }, 3000);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const app = new StyleDecoder();
+    app.init();
+});
+</script>
+</body>
+</html>
