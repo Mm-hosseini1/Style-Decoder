@@ -29,3 +29,6 @@ Review and publish a new release.
 5. **Verify:**
    Run `gh run list --repo GLips/Figma-Context-MCP --limit 1` to confirm the Release workflow triggered.
    Report the workflow run URL so the user can monitor npm publish.
+
+
+## test 2
