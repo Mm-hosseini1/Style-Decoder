@@ -273,3 +273,85 @@ Opus Archive is text-first. Images are used only when they deepen understanding,
 
 - **Archival & Documentary:** Historical portraits of composers, photographs of original manuscripts, architectural drawings of concert halls, period instrument photographs, and musicological diagrams.
 - **Mood:** Contemplative, atmospheric but never sentimental. Light feels natural and directional—like reading by a tall window in a nineteenth-century library.
+
+### Image Treatments
+
+- **Black & White:** The default treatment. All images are converted to a warm black-and-white duotone. The shadow tones gently cool into Ink, the highlights warm into Vellum, using a subtle split tone.
+- **Accented Duotone:** For specific series or featured articles, images may receive a faint Burnished Gold tint in their highlights, applied at very low opacity (5–15%), to create a cohesive, archival-patina effect without overwhelming the content.
+- **No Full Colour:** Opus Archive does not use vivid, full-colour photography except in rare, historically justified cases (e.g., a specific contemporary performance essential to an article). Even then, saturation is reduced, and a slight warmth is introduced.
+- **Borders:** Images are framed with a hairline 0.5px solid border in Stone, or enclosed in generous white space. This creates the impression of an engraving in a book.
+
+### Usage Rules
+
+- Images are always captioned in Stone (Body Small) with full bibliographic attribution where applicable.
+- An image’s maximum width on a desktop article column is 720px; it may not bleed to full viewport width.
+- One hero image per article, optional. Deep-dives may have no imagery at all. Let the typography breathe.
+
+---
+
+## Layout & Grid System
+
+The layout embodies “the sanctuary of text.” The architecture is quiet, predictable, and spacious, giving the reader’s mind no friction.
+
+### Core Principles
+
+- **Single-Column Reading:** Content lives in a centred, single column with a maximum width of 680px (approx. 75 characters per line at body size), anchored by ample side margins.
+- **Generous White Space:** Margins and padding are never less than 24px. Section spacing is built on a 12px baseline grid (multiples of 12px for vertical rhythm).
+- **Asymmetric Navigation:** A discreet, collapsible left sidebar (approx. 240px) houses the main navigation, article index, and taxonomy browsing. It uses a slightly darker surface (Chalk) to differentiate from the reading area (Vellum). On mobile, it collapses into a standard overlay menu.
+- **Metadata Column (Optional):** On article pages, a narrow right-hand column (approx. 200px) can show quick infobox data (dates, catalog numbers, keys), set in Stone on a Chalk background. This is optional; many articles display this data at the top as a subtle horizontal bar to preserve reading flow.
+
+### Breakpoints
+
+- Desktop wide: >1280px (full sidebar, optional metadata).
+- Desktop small: 1024–1280px (sidebar collapses to icons, metadata hidden).
+- Tablet: 768–1024px (sidebar becomes top navigation, single column content).
+- Mobile: <768px (hamburger nav, full-width text with 24px side padding).
+
+---
+
+## Iconography
+
+Icons are the annotation marks of the interface—tiny, refined, never distracting.
+
+### Style
+
+- **Line Weight:** 1.5px consistent stroke, rounded caps and joins.
+- **Grid:** Designed on a 24x24px grid, with 2px internal padding.
+- **Aesthetics:** Delicate, architectural, evoking engraved illustrations or fine scoring. No filled shapes unless absolutely necessary (e.g., play buttons for any future media; then filled but soft).
+- **Color:** Stone for default; Ink on hover/active. Never Burnished Gold (reserved for the logo accent and links).
+
+### Primary Icons
+
+- **Navigation:** Hamburger (three horizontal lines, each 12px with 4px gaps).
+- **Search:** A magnifying glass.
+- **Taxonomy:** A tag icon (single outline), a filter funnel.
+- **Article actions:** Share (an elegant box with an arrow), citation (quotation mark), bookmark (ribbon outline).
+- **UI:** Chevron arrows, close X, plus/minus for expanding sections.
+
+---
+
+## Visual Theme & Moodboard
+
+The visual theme of Opus Archive can be described as **“The Scholars’ Reading Room, Reimagined.”**
+
+Imagine stepping into a private library at twilight:
+
+- The deep, quiet hush of old wooden shelves holding centuries of bound scores.
+- A softly diffused pool of lamplight falls on a clean white page of text.
+- Gilt titles on leather spines glint faintly in the gloom.
+- The air smells of paper, parchment, and distant rosin.
+- But the room’s desk is a slab of pale, minimalist stone; the chair, a piece of timeless mid-century design.
+- The walls are clad in Vellum-coloured linen, and the only decoration is a single, meticulously engraved portrait of an aged composer, rendered in near-black and silver tones.
+
+### Moodboard Imagery
+
+- High-contrast, warm-toned black-and-white portrait of Clara Schumann by Franz von Lenbach, cropped to frame her intense gaze.
+- A close-up of a Bach manuscript page, the ink slightly bleeding into the paper, lit from the left.
+- The reading room of the Accademia Nazionale di Santa Cecilia, its towering wooden shelves fading into shadow.
+- A modern ceramics studio: a hand throwing a perfectly smooth, off-white clay bowl on a wheel—a metaphor for the craft of careful, minimalist prose.
+- Swiss typographic posters from the 1950s: clean, grid-based, using only Black, Cream, and a single muted red (here replaced by our Gold).
+- A detail of a vintage fountain pen nib, glinting gold, resting on a cream laid-paper journal.
+
+This theme doesn’t scream “classical music.” It whispers it. It appeals to the intellectual’s desire for a space of one’s own—a place away from the visual noise of the web, where only knowledge, light, and silence remain.
+
+
